@@ -287,17 +287,28 @@ start_cloudflared() {
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Alefa i Cloudflared..."
     setup_site
     
-    # Mandefa an'i cloudflared any ambadika (background)
+    # Mandefa an'i cloudflared any ambadika
     ./.server/cloudflared tunnel --url "$HOST":"$PORT" --logfile .server/.cld.log > /dev/null 2>&1 &
     
     echo -e "${RED}[${WHITE}-${RED}]${YELLOW} Andrasana kely ny famoronana ny rohy..."
     
-    # Manao boucle miandry mandra-pahitana ilay rohy ao anaty log
     cldflr_link=""
+    counter=0
     while [ -z "$cldflr_link" ]; do
         sleep 2
+        counter=$((counter + 2))
+        
         if [ -f .server/.cld.log ]; then
             cldflr_link=$(grep -o 'https://[-0-9a-z]*\.trycloudflare.com' .server/.cld.log | head -n 1)
+        fi
+        
+        # Raha mihoatra ny 20 segondra dia mivoaka mba tsy hihitsoka mandrakizay
+        if [ $counter -ge 20 ]; then
+            echo -e "${RED}[${WHITE}-${RED}]${RED} Hadisoana: Naharitra loatra ny famoronana rohy."
+            echo -e "${RED}[${WHITE}-${RED}]${YELLOW} Hamarino ny internet na ny fisian'ilay binaire cloudflared."
+            sleep 3
+            main_menu
+            return
         fi
     done
     
