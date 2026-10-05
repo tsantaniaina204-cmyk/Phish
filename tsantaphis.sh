@@ -432,4 +432,5 @@ EOF
 kill_pid
 dependencies
 install_cloudflared
+install_loclx
 main_menu 
