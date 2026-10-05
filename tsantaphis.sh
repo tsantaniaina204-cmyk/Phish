@@ -358,7 +358,5 @@ EOF
 # Famelomana voalohany
 kill_pid
 dependencies
-install_ngrok
 install_cloudflared
-install_loclx
-main_menu
+main_menu 
